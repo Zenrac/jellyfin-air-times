@@ -12,7 +12,7 @@
         "changelog": "- Fix exception in logs\n- Do not allow future release date (max always today)",
         "targetAbi": "10.9.0.0",
         "sourceUrl": "https://github.com/zenrac/jellyfin-plugin-airtimes/releases/download/v0.0.3.0/Jellyfin.Plugin.AirTimes.zip",
-        "checksum": "c78a58f7bdf1175f68dccf0769e393af",
+        "checksum": "b793186e09afa3beca24d3133a56a6c1",
         "timestamp": "2026-05-03T00:24:00Z"
       },
       {
