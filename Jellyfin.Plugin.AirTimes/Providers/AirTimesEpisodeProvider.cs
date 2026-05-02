@@ -50,11 +50,20 @@ public class AirTimesEpisodeProvider(IHttpClientFactory httpClientFactory, ILogg
 
     metadata.Item = new Episode
     {
-      PremiereDate = episodeAirDate
+      PremiereDate = ClampFutureDate(episodeAirDate.Value)
     };
     metadata.HasMetadata = true;
 
     return metadata;
+  }
+
+  private static DateTime ClampFutureDate(DateTime airDate)
+  {
+    var today = DateTime.Today;
+
+    return airDate.Date > today
+      ? today
+      : airDate;
   }
 
   /// <summary>

@@ -105,15 +105,15 @@ public class Tvdb(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFac
     if (episodeResolvable is int episodeId)
     {
       relevantEpisode = episodes.EnumerateArray()
-        .First(e => e.GetProperty("tvdbId").GetInt32() == episodeId);
+        .FirstOrDefault(e => e.TryGetProperty("tvdbId", out var tvdbId) && tvdbId.GetInt32() == episodeId);
     }
     else if (episodeResolvable is string episodeTitle)
     {
       relevantEpisode = episodes.EnumerateArray()
-        .First(e => e.GetProperty("title").GetString() == episodeTitle);
+        .FirstOrDefault(e => e.TryGetProperty("title", out var title) && title.GetString() == episodeTitle);
     }
 
-    if (relevantEpisode is null)
+    if (relevantEpisode is null || relevantEpisode.Value.ValueKind == JsonValueKind.Undefined)
     {
       logger.LogWarning("No episode found for {EpisodeTitle}", episodeResolvable);
       return null;
