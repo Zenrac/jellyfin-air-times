@@ -17,8 +17,10 @@ You can install this plugin using Jellyfin’s plugin catalog and repositories.
 First, open Jellyfin and go to `Dashboard` -> `Catalog`. Click the settings icon to open the plugin repository list, then add a new repository with the following details:
 
 - Repository Name: Air Times
-- Repository URL: https://raw.githubusercontent.com/apteryxxyz/jellyfin-plugin-airtimes/main/manifest.json
+- Repository URL: https://raw.githubusercontent.com/zenrac/jellyfin-plugin-airtimes/main/manifest.json
 
 Save your changes and return to the plugin catalog. Locate the Air Times plugin and install it. Once the installation is complete, restart Jellyfin.
 
 After restarting, you can enable Air Times as a metadata source by editing any Shows library in `Dashboard` -> `Libraries` and ensure it is above the default TheTVDB plugin.
+
+![image](https://i.imgur.com/1LaUrVh.png)
