@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using J2N;
 using Jellyfin.Plugin.AirTimes.Services;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,10 @@ namespace Jellyfin.Plugin.AirTimes.Providers;
 /// <summary>
 /// Air Times episodes provider.
 /// </summary>
-public class AirTimesEpisodeProvider(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+public class AirTimesEpisodeProvider(
+  IHttpClientFactory httpClientFactory,
+  ILoggerFactory loggerFactory,
+  ILibraryManager libraryManager)
   : IRemoteMetadataProvider<Episode, EpisodeInfo>
 {
   private readonly ILogger<AirTimesEpisodeProvider> logger = loggerFactory.CreateLogger<AirTimesEpisodeProvider>();
@@ -50,19 +54,33 @@ public class AirTimesEpisodeProvider(IHttpClientFactory httpClientFactory, ILogg
 
     metadata.Item = new Episode
     {
-      PremiereDate = ClampFutureDate(episodeAirDate.Value)
+      PremiereDate = ClampFutureDate(episodeAirDate.Value, GetDateAdded(info))
     };
     metadata.HasMetadata = true;
 
     return metadata;
   }
 
-  private static DateTime ClampFutureDate(DateTime airDate)
+  private DateTime? GetDateAdded(EpisodeInfo info)
   {
-    var today = DateTime.Today;
+    if (string.IsNullOrWhiteSpace(info.Path))
+    {
+      return null;
+    }
 
-    return airDate.Date > today
-      ? today
+    return libraryManager.FindByPath(info.Path, false)?.DateCreated;
+  }
+
+  private static DateTime ClampFutureDate(DateTime airDate, DateTime? dateAdded)
+  {
+    var maxDate = DateTime.Today;
+    if (dateAdded.HasValue && dateAdded.Value.Date < maxDate)
+    {
+      maxDate = dateAdded.Value.Date;
+    }
+
+    return airDate.Date > maxDate
+      ? maxDate
       : airDate;
   }
 
